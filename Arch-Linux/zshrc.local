@@ -1,0 +1,127 @@
+#!/bin/zsh
+
+#############
+### ALIAS ###
+#############
+
+# CPU Freq
+alias cpumax='sudo /usr/local/bin/cpufreqctl-dum max'
+
+# various
+function cpbak() {cp -av "$1" "$1.bak"}
+alias rm='rm -rI'
+alias congit='/usr/bin/git --git-dir=$HOME/Git/self/punktfiles.git/ --work-tree=$HOME'
+alias gpgdir='/usr/bin/perlbin/site_perl/gpgdir'
+alias rsync='/usr/bin/rsync -aAX --info=progress2'
+alias azeit='~/scripts/arbeitszeit.sh'
+
+# arch
+alias search='pacman -Ss'
+alias install='sudo pacman -Sy'
+alias upgrade='trizen -Syu --noconfirm'
+
+# emacs
+alias em='emacsclient -c'
+# alias vim='emacsclient -c'
+
+# cd movemnts
+alias d='dirs -v'
+alias bb='cd -'
+alias b1='cd +1'
+alias b2='cd +2'
+alias b3='cd +3'
+alias b4='cd +4'
+alias b5='cd +5'
+alias b6='cd +6'
+alias b7='cd +7'
+alias b8='cd +7'
+alias b9='cd +7'
+
+# translate-shell
+alias trans='/usr/bin/trans'
+alias tde='/usr/bin/trans -t de'
+
+# even-better-ls
+LS_COLORS=$(~/.config/ls_colors_generator)
+alias l='command ls -v --color=auto --format=single-column --group-directories-first'
+alias la='command ls -Av --color=auto --format=single-column --group-directories-first'
+
+# Starship prompt
+#eval "$(starship init zsh)"
+
+# play ambient nois with Sox
+alias nois='play -n -c1 synth whitenoise lowpass -1 120 lowpass -1 120 lowpass -1 120 gain +14'
+alias wald='play $(for i in {1..100}; do echo -n "~/Downloads/AmbientSounds/WaldMix.wav "; done) lowpass -1 2500'
+
+# VIM Keybindings
+bindkey -v
+
+# curseradio-imroved. installed vie pip3
+alias cradio='~/.local/bin/curseradio-improved'
+alias songpalying='pacmd list-sink-inputs | grep media.name'
+
+alias getGT='~/.py_env_googleTasks/bin/michel-orgmode --pull --orgfile ~/Org/GTcapture.org --listname Capture'
+alias clearGT='read "?Are you sure (y/N)? "; if [[ $REPLY =~ ^[Yy]$ ]]; then; ~/.py_env_googleTasks/bin/michel-orgmode --push --orgfile ~/Org/GTcapture.org --listname Capture; fi'
+
+####################
+### AUTOCOMPLETE ###
+####################
+
+# Autocomplete for kubectl
+if [ $commands[kubectl] ]; then source <(kubectl completion zsh); fi
+
+# Load Autosuggestion packge (install via pacman)
+source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.plugin.zsh
+# Configure Keybindings for autosuggestions
+#bindkey '^l' autosuggest-accept
+
+# Remove false from the history
+zshaddhistory() { whence ${${(z)1}[1]} >| /dev/null || return 1 }
+
+# automatic history complete like emacs helm
+source /usr/share/zaw/zaw.zsh
+bindkey '^R' zaw-history
+
+#############
+## THEMING ##
+#############
+#
+# to list all collors in the terminal use
+# for i in {1..256}; do print -P "%F{$i}Color : $i"; done;
+#
+# Prompt
+# ------
+# New items for prompt item list
+grml_theme_add_token arrow_down '╰ ' '%F{252}' '%f'
+grml_theme_add_token arrow_up '╭─ ' '%F{252}' '%f'
+# Colors for items
+zstyle ':prompt:grml:*:items:path' pre '%B%F{blue}'
+# List of Items
+#zstyle ':prompt:grml:left:setup' items rc virtual-env change-root user at host path vcs newline arrow
+zstyle ':prompt:grml:left:setup' items arrow_up virtual-env change-root rc path vcs newline arrow_down
+
+# Sad Smilie on the right side
+zstyle ':prompt:grml:right:use-rprompt' true
+# Git
+    autoload -U colors && colors
+    zstyle ':vcs_info:*' enable git
+    zstyle ':vcs_info:*' check-for-changes true
+    zstyle ':vcs_info:*' unstagedstr '!'
+    zstyle ':vcs_info:*' stagedstr '+'
+    zstyle ':vcs_info:git*' formats "%{${fg[blue]}%}(%{${fg[yellow]}%}%b%{${fg[red]}%}%m%u%c%{${fg[blue]}%})%{$reset_color%}"
+
+
+# Blank lines
+# -----------
+# Echo before prompt
+#precmd() {precmd() {echo} }
+# Echo before each command
+#preexec() {echo}
+
+
+# Dark theme for kitten terminal in gnome
+# ---------------------------------------
+#if [ "$TERM" = "xterm-kitty" ]; then
+#	  id=`xprop -root | grep "_NET_ACTIVE_WINDOW(WINDOW)" | awk '{print $5}'`
+#	  xprop -f _GTK_THEME_VARIANT 8u -set _GTK_THEME_VARIANT dark -id "$id"
+#fi
